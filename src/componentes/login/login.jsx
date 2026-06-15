@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import './login.css';
+import Forgot from '../forgot/forgot';
+import { loginUser, registerUser } from '../../api/auth';
 
 const Login = ({ onLogin }) => {
   const [activeTab, setActiveTab] = useState('login');
@@ -12,6 +14,8 @@ const Login = ({ onLogin }) => {
     password: '',
     confirmPassword: '',
   });
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleLoginChange = (event) => {
     const { name, value } = event.target;
@@ -23,51 +27,88 @@ const Login = ({ onLogin }) => {
     setRegisterData((current) => ({ ...current, [name]: value }));
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    if (activeTab === 'login') {
-      console.log('Ingresar con:', loginData);
-    } else {
-      console.log('Registrar con:', registerData);
+    setError('');
+    setLoading(true);
+
+    try {
+      if (activeTab === 'login') {
+        const response = await loginUser({
+          email: loginData.user,
+          password: loginData.password,
+        });
+        onLogin(response.user, response.token);
+      } else {
+        if (registerData.password !== registerData.confirmPassword) {
+          setError('Las contraseñas no coinciden.');
+          return;
+        }
+
+        const response = await registerUser({
+          firstName: registerData.firstName,
+          lastName: registerData.lastName,
+          phone: registerData.phone,
+          email: registerData.email,
+          password: registerData.password,
+        });
+        onLogin(response.user, response.token);
+      }
+    } catch (err) {
+      setError(err.message || 'Error al autenticar.');
+    } finally {
+      setLoading(false);
     }
-    onLogin?.();
   };
+
+  if (activeTab === 'forgot') {
+    return <Forgot onBack={() => { setActiveTab('login'); setError(''); }} />;
+  }
 
   return (
     <div className="login-page">
       <div className="login-box">
-        <div className="brand-logo" aria-hidden="true" />
+        <img className="brand-logo" src="/raccord-logo.jpeg" alt="Raccord" />
 
         <div className="login-card">
           <div className="login-tabs">
             <button
               type="button"
               className={`login-tab ${activeTab === 'login' ? 'active' : ''}`}
-              onClick={() => setActiveTab('login')}
+              onClick={() => {
+                setActiveTab('login');
+                setError('');
+              }}
             >
               Ingresar
             </button>
             <button
               type="button"
               className={`login-tab ${activeTab === 'register' ? 'active' : ''}`}
-              onClick={() => setActiveTab('register')}
+              onClick={() => {
+                setActiveTab('register');
+                setError('');
+              }}
             >
               Registrar
             </button>
           </div>
 
           <form className="login-form" onSubmit={handleSubmit}>
+            {error && <div className="login-error">{error}</div>}
+
             {activeTab === 'login' ? (
               <>
                 <div className="field-group">
-                  <label htmlFor="user">Username o E-mail</label>
+                  <label htmlFor="user">Email</label>
                   <input
                     id="user"
                     name="user"
-                    type="text"
-                    placeholder="Ingresa tu usuario o correo"
+                    type="email"
+                    placeholder="Ingresa tu correo"
                     value={loginData.user}
                     onChange={handleLoginChange}
+                    required
                   />
                 </div>
 
@@ -80,15 +121,18 @@ const Login = ({ onLogin }) => {
                     placeholder="Ingresa tu contraseña"
                     value={loginData.password}
                     onChange={handleLoginChange}
+                    required
                   />
                 </div>
 
-                <button className="submit-button" type="submit">
-                  Ingresar
+                <button className="submit-button" type="submit" disabled={loading}>
+                  {loading ? 'Ingresando...' : 'Ingresar'}
                 </button>
 
                 <div className="login-footer">
-                  <a href="#">¿Olvidaste tu contraseña o usuario?</a>
+                  <button type="button" className="link-button" onClick={() => setActiveTab('forgot')}>
+                    ¿Olvidaste tu contraseña o usuario?
+                  </button>
                 </div>
               </>
             ) : (
@@ -102,6 +146,7 @@ const Login = ({ onLogin }) => {
                     placeholder="Ingresa tus nombres"
                     value={registerData.firstName}
                     onChange={handleRegisterChange}
+                    required
                   />
                 </div>
 
@@ -114,6 +159,7 @@ const Login = ({ onLogin }) => {
                     placeholder="Ingresa tus apellidos"
                     value={registerData.lastName}
                     onChange={handleRegisterChange}
+                    required
                   />
                 </div>
 
@@ -138,6 +184,7 @@ const Login = ({ onLogin }) => {
                     placeholder="Ingresa tu correo electrónico"
                     value={registerData.email}
                     onChange={handleRegisterChange}
+                    required
                   />
                 </div>
 
@@ -150,6 +197,7 @@ const Login = ({ onLogin }) => {
                     placeholder="Crea una contraseña"
                     value={registerData.password}
                     onChange={handleRegisterChange}
+                    required
                   />
                 </div>
 
@@ -162,11 +210,12 @@ const Login = ({ onLogin }) => {
                     placeholder="Confirma tu contraseña"
                     value={registerData.confirmPassword}
                     onChange={handleRegisterChange}
+                    required
                   />
                 </div>
 
-                <button className="submit-button" type="submit">
-                  Registrar
+                <button className="submit-button" type="submit" disabled={loading}>
+                  {loading ? 'Registrando...' : 'Registrar'}
                 </button>
               </>
             )}

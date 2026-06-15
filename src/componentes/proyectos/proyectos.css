@@ -20,10 +20,10 @@
 }
 
 .proyectos-logo {
-  font-size: 2rem;
-  font-weight: 700;
-  color: white;
-  letter-spacing: 0.1em;
+  width: 96px;
+  height: 96px;
+  border-radius: 24px;
+  object-fit: cover;
 }
 
 .proyectos-logo-accent {

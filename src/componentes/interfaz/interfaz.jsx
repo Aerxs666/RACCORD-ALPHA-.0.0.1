@@ -5,6 +5,8 @@ const Interfaz = ({ project, onBack }) => {
   return (
     <div className="interfaz-page">
       <div className="interfaz-header">
+        <img className="interfaz-logo" src="/raccord-logo.jpeg" alt="Raccord" />
+
         <div className="interfaz-title">
           <h2>{project?.title || 'Proyecto'}</h2>
           <button className="menu-button">☰ Menú</button>

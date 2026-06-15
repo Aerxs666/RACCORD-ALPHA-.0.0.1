@@ -35,11 +35,7 @@ const Proyectos = () => {
       ) : (
         <>
           <div className="proyectos-header">
-            <div className="proyectos-logo">
-              <span>R</span>
-              <span className="proyectos-logo-accent">a</span>
-              <span>ccord</span>
-            </div>
+            <img className="proyectos-logo" src="/raccord-logo.jpeg" alt="Raccord" />
 
             <div className="proyectos-intro">
               <div className="proyectos-intro-icon" aria-hidden="true">

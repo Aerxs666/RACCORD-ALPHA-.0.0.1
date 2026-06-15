@@ -22,36 +22,9 @@
   width: 92px;
   height: 92px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(70, 150, 255, 0.75) 0%, rgba(34, 48, 99, 0.3) 45%, transparent 80%),
-    linear-gradient(135deg, #3d9bff, #ff6b9d);
-  display: grid;
-  place-items: center;
-  position: relative;
+  object-fit: cover;
   box-shadow: 0 0 40px rgba(58, 145, 255, 0.16);
-}
-
-.brand-logo::before,
-.brand-logo::after {
-  content: "";
-  position: absolute;
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  border: 3px solid transparent;
-}
-
-.brand-logo::before {
-  border-top-color: #50b2ff;
-  border-right-color: rgba(255, 255, 255, 0.4);
-  transform: rotate(20deg);
-}
-
-.brand-logo::after {
-  width: 32px;
-  height: 32px;
-  border-bottom-color: #ff9f7e;
-  border-left-color: rgba(255, 255, 255, 0.35);
-  transform: rotate(-35deg);
+  border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .login-card {
@@ -141,9 +114,17 @@
   font-size: 0.86rem;
 }
 
-.login-footer a {
+.login-footer .link-button {
+  background: transparent;
+  border: none;
+  padding: 0;
   color: rgba(255, 255, 255, 0.72);
-  text-decoration: none;
+  font: inherit;
+  cursor: pointer;
+}
+
+.login-footer .link-button:hover {
+  text-decoration: underline;
 }
 
 @media (max-width: 480px) {

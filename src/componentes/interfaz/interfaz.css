@@ -11,6 +11,14 @@
   justify-content: space-between;
   max-width: 1150px;
   margin: 0 auto 18px;
+  gap: 18px;
+}
+
+.interfaz-logo {
+  width: 72px;
+  height: 72px;
+  border-radius: 18px;
+  object-fit: cover;
 }
 
 .interfaz-title h2 {
