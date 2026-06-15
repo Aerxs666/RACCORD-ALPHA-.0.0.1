@@ -127,12 +127,39 @@
   text-decoration: underline;
 }
 
-@media (max-width: 480px) {
-  .login-box {
-    max-width: 100%;
+  .demo-access {
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding-top: 18px;
+    display: grid;
+    gap: 12px;
   }
 
-  .login-form {
-    padding: 20px 18px 22px;
+  .demo-access p {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 0.92rem;
   }
-}
+
+  .demo-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .demo-button {
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    padding: 12px 0;
+    font-weight: 700;
+    background: rgba(255, 255, 255, 0.05);
+    color: #f6f8fb;
+    cursor: pointer;
+  }
+
+  .demo-button--admin {
+    background: rgba(49, 86, 191, 0.18);
+  }
+
+  .demo-button--user {
+    background: rgba(33, 171, 149, 0.16);
+  }

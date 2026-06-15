@@ -42,6 +42,7 @@ const Login = ({ onLogin }) => {
       } else {
         if (registerData.password !== registerData.confirmPassword) {
           setError('Las contraseñas no coinciden.');
+          setLoading(false);
           return;
         }
 
@@ -59,6 +60,16 @@ const Login = ({ onLogin }) => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleDemoLogin = (role) => {
+    const demoUser = {
+      name: role === 'admin' ? 'Admin Demo' : 'Usuario Demo',
+      role,
+      email: role === 'admin' ? 'admin@demo.com' : 'user@demo.com',
+    };
+
+    onLogin(demoUser, null);
   };
 
   if (activeTab === 'forgot') {
@@ -220,6 +231,18 @@ const Login = ({ onLogin }) => {
               </>
             )}
           </form>
+
+          <div className="demo-access">
+            <p>Si aún no está conectado a la base de datos, ingresa con demo:</p>
+            <div className="demo-buttons">
+              <button type="button" className="demo-button demo-button--admin" onClick={() => handleDemoLogin('admin')}>
+                Acceder como Admin
+              </button>
+              <button type="button" className="demo-button demo-button--user" onClick={() => handleDemoLogin('user')}>
+                Acceder como Usuario
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>

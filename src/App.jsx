@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import './App.css';
 import Login from './componentes/login/login';
-import Proyectos from './componentes/proyectos/proyectos';
+import AdminDashboard from './componentes/admin/AdminDashboard';
+import UserDashboard from './componentes/user/UserDashboard';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -39,10 +40,18 @@ function App() {
     setIsAuthenticated(true);
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem('authToken');
+    setUser(null);
+    setIsAuthenticated(false);
+  };
+
+  const Dashboard = user?.role === 'admin' ? AdminDashboard : UserDashboard;
+
   return (
     <div className="app-shell">
       {isAuthenticated ? (
-        <Proyectos user={user} />
+        <Dashboard user={user} onLogout={handleLogout} />
       ) : (
         <Login onLogin={handleLogin} />
       )}
