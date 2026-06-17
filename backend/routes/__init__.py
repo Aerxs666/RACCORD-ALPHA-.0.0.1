@@ -1,1 +1,1 @@
-# Routes module
+# Archivo __init__.py para routes

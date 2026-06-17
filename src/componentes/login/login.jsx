@@ -7,12 +7,17 @@ const Login = ({ onLogin }) => {
   const [activeTab, setActiveTab] = useState('login');
   const [loginData, setLoginData] = useState({ user: '', password: '' });
   const [registerData, setRegisterData] = useState({
-    firstName: '',
-    lastName: '',
-    phone: '',
+    nombre: '',
+    apellido: '',
+    identificacion: '',
+    id_identificacion: '',
     email: '',
+    misisdn: '',
+    direccion: '',
+    fecha_de_nacimiento: '',
     password: '',
     confirmPassword: '',
+    id_departamento: '',
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -47,11 +52,16 @@ const Login = ({ onLogin }) => {
         }
 
         const response = await registerUser({
-          firstName: registerData.firstName,
-          lastName: registerData.lastName,
-          phone: registerData.phone,
+          nombre: registerData.nombre,
+          apellido: registerData.apellido,
+          identificacion: registerData.identificacion,
+          id_identificacion: registerData.id_identificacion,
           email: registerData.email,
+          misisdn: registerData.misisdn,
+          direccion: registerData.direccion,
+          fecha_de_nacimiento: registerData.fecha_de_nacimiento,
           password: registerData.password,
+          id_departamento: registerData.id_departamento,
         });
         onLogin(response.user, response.token);
       }
@@ -149,40 +159,57 @@ const Login = ({ onLogin }) => {
             ) : (
               <>
                 <div className="field-group">
-                  <label htmlFor="firstName">Nombres</label>
+                  <label htmlFor="nombre">Nombres</label>
                   <input
-                    id="firstName"
-                    name="firstName"
+                    id="nombre"
+                    name="nombre"
                     type="text"
                     placeholder="Ingresa tus nombres"
-                    value={registerData.firstName}
+                    value={registerData.nombre}
                     onChange={handleRegisterChange}
                     required
                   />
                 </div>
 
                 <div className="field-group">
-                  <label htmlFor="lastName">Apellidos</label>
+                  <label htmlFor="apellido">Apellidos</label>
                   <input
-                    id="lastName"
-                    name="lastName"
+                    id="apellido"
+                    name="apellido"
                     type="text"
                     placeholder="Ingresa tus apellidos"
-                    value={registerData.lastName}
+                    value={registerData.apellido}
                     onChange={handleRegisterChange}
                     required
                   />
                 </div>
 
                 <div className="field-group">
-                  <label htmlFor="phone">Celular</label>
-                  <input
-                    id="phone"
-                    name="phone"
-                    type="tel"
-                    placeholder="Ingresa tu número de celular"
-                    value={registerData.phone}
+                  <label htmlFor="identificacion">Tipo de Identificación</label>
+                  <select
+                    id="identificacion"
+                    name="identificacion"
+                    value={registerData.identificacion}
                     onChange={handleRegisterChange}
+                    required
+                  >
+                    <option value="">Selecciona un tipo</option>
+                    <option value="cedula">Cédula</option>
+                    <option value="pasaporte">Pasaporte</option>
+                    <option value="nit">NIT</option>
+                  </select>
+                </div>
+
+                <div className="field-group">
+                  <label htmlFor="id_identificacion">Número de Identificación</label>
+                  <input
+                    id="id_identificacion"
+                    name="id_identificacion"
+                    type="text"
+                    placeholder="Ingresa tu número de identificación"
+                    value={registerData.id_identificacion}
+                    onChange={handleRegisterChange}
+                    required
                   />
                 </div>
 
@@ -197,6 +224,56 @@ const Login = ({ onLogin }) => {
                     onChange={handleRegisterChange}
                     required
                   />
+                </div>
+
+                <div className="field-group">
+                  <label htmlFor="misisdn">Celular</label>
+                  <input
+                    id="misisdn"
+                    name="misisdn"
+                    type="tel"
+                    placeholder="Ingresa tu número de celular"
+                    value={registerData.misisdn}
+                    onChange={handleRegisterChange}
+                  />
+                </div>
+
+                <div className="field-group">
+                  <label htmlFor="direccion">Dirección</label>
+                  <input
+                    id="direccion"
+                    name="direccion"
+                    type="text"
+                    placeholder="Ingresa tu dirección"
+                    value={registerData.direccion}
+                    onChange={handleRegisterChange}
+                  />
+                </div>
+
+                <div className="field-group">
+                  <label htmlFor="fecha_de_nacimiento">Fecha de Nacimiento</label>
+                  <input
+                    id="fecha_de_nacimiento"
+                    name="fecha_de_nacimiento"
+                    type="date"
+                    value={registerData.fecha_de_nacimiento}
+                    onChange={handleRegisterChange}
+                  />
+                </div>
+
+                <div className="field-group">
+                  <label htmlFor="id_departamento">Departamento</label>
+                  <select
+                    id="id_departamento"
+                    name="id_departamento"
+                    value={registerData.id_departamento}
+                    onChange={handleRegisterChange}
+                  >
+                    <option value="">Selecciona un departamento</option>
+                    <option value="1">Departamento 1</option>
+                    <option value="2">Departamento 2</option>
+                    <option value="3">Departamento 3</option>
+                  </select>
                 </div>
 
                 <div className="field-group">
@@ -232,17 +309,7 @@ const Login = ({ onLogin }) => {
             )}
           </form>
 
-          <div className="demo-access">
-            <p>Si aún no está conectado a la base de datos, ingresa con demo:</p>
-            <div className="demo-buttons">
-              <button type="button" className="demo-button demo-button--admin" onClick={() => handleDemoLogin('admin')}>
-                Acceder como Admin
-              </button>
-              <button type="button" className="demo-button demo-button--user" onClick={() => handleDemoLogin('user')}>
-                Acceder como Usuario
-              </button>
-            </div>
-          </div>
+
         </div>
       </div>
     </div>

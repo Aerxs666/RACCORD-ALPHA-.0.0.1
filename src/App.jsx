@@ -9,7 +9,7 @@ function App() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const token = localStorage.getItem('authToken');
+    const token = localStorage.getItem('token');
     if (!token) return;
 
     fetch('/api/auth/profile', {
@@ -27,21 +27,21 @@ function App() {
         setIsAuthenticated(true);
       })
       .catch(() => {
-        localStorage.removeItem('authToken');
+        localStorage.removeItem('token');
         setIsAuthenticated(false);
       });
   }, []);
 
   const handleLogin = (userData, token) => {
     if (token) {
-      localStorage.setItem('authToken', token);
+      localStorage.setItem('token', token);
     }
     setUser(userData);
     setIsAuthenticated(true);
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('authToken');
+    localStorage.removeItem('token');
     setUser(null);
     setIsAuthenticated(false);
   };

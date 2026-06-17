@@ -1,116 +1,123 @@
-# Backend Python - Raccord
+# Backend - Raccord
 
-Backend Flask para autenticación y gestión de usuarios de Raccord.
+Backend de la aplicación Raccord construido con Flask y PostgreSQL.
 
-## Estructura
+## Requisitos
 
-```
-backend/
-├── config/
-│   ├── config.py          # Configuración de la aplicación
-│   └── database.py        # Conexión a PostgreSQL
-├── models/
-│   └── user.py            # Modelo de usuario
-├── controllers/
-│   └── auth.py            # Lógica de autenticación
-├── routes/
-│   └── auth.py            # Endpoints de autenticación
-├── utils/
-│   └── security.py        # Hashing (bcrypt) y JWT
-├── app.py                 # Aplicación principal
-├── requirements.txt       # Dependencias
-├── .env                   # Variables de entorno
-└── migrations.sql         # Script para agregar columnas a DB
-```
+- Python 3.8+
+- PostgreSQL 12+
+- pip
 
 ## Instalación
 
-### 1. Crear entorno virtual (Python 3.8+)
+1. **Crear un entorno virtual:**
 
 ```bash
-cd backend
 python -m venv venv
-# En Windows:
-venv\Scripts\activate
-# En macOS/Linux:
+```
+
+2. **Activar el entorno virtual:**
+
+En Windows (PowerShell):
+```powershell
+.\venv\Scripts\Activate.ps1
+```
+
+En Linux/Mac:
+```bash
 source venv/bin/activate
 ```
 
-### 2. Instalar dependencias
+3. **Instalar dependencias:**
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 3. Configurar variables de entorno
+4. **Configurar variables de entorno:**
 
-Edita `backend/.env` con las credenciales reales de PostgreSQL:
+Copiar `.env.example` a `.env` y llenar con tus credenciales:
 
-```env
-DB_HOST=localhost
-DB_PORT=5432
-DB_NAME=raccorddb
-DB_USER=tu_usuario
-DB_PASSWORD=tu_contraseña
-JWT_SECRET=una_clave_muy_segura
-HOST=0.0.0.0
-PORT=4000
-DEBUG=False
+```bash
+cp .env.example .env
 ```
 
-### 4. Preparar la base de datos
+Editar `.env` con tus valores:
+- `DB_HOST`: Host de PostgreSQL (ej: localhost)
+- `DB_PORT`: Puerto de PostgreSQL (ej: 5432)
+- `DB_NAME`: Nombre de la base de datos (ej: raccord_db)
+- `DB_USER`: Usuario de PostgreSQL (ej: postgres)
+- `DB_PASSWORD`: Contraseña de PostgreSQL
+- `JWT_SECRET`: Clave secreta para JWT (cámbiala en producción)
 
-Ejecuta en DBeaver el contenido de `backend/migrations.sql` para agregar las columnas necesarias a tu tabla `users`:
+5. **Crear la base de datos en PostgreSQL:**
 
 ```sql
-ALTER TABLE users ADD COLUMN IF NOT EXISTS password_hash VARCHAR(255);
-ALTER TABLE users ADD COLUMN IF NOT EXISTS fecha_creacion TIMESTAMPTZ DEFAULT NOW();
+CREATE DATABASE raccord_db;
+```
+
+6. **Ejecutar el script de base de datos:**
+
+```bash
+psql -U postgres -d raccord_db -f ../database.sql
 ```
 
 ## Ejecutar el servidor
 
 ```bash
-python app.py
+python main.py
 ```
 
-El servidor estará disponible en `http://localhost:4000`
+El servidor estará disponible en `http://127.0.0.1:4000`
+
+## Estructura de archivos
+
+```
+backend/
+├── app.py                 # Factory de la aplicación Flask
+├── main.py               # Punto de entrada
+├── requirements.txt      # Dependencias de Python
+├── .env.example         # Template de variables de entorno
+├── config/
+│   ├── config.py        # Configuración de la aplicación
+│   ├── database.py      # Conexión a PostgreSQL
+│   └── __init__.py
+├── models/
+│   ├── user.py          # Modelo de Usuario
+│   └── __init__.py
+├── controllers/
+│   ├── auth.py          # Controlador de autenticación
+│   └── __init__.py
+├── routes/
+│   ├── auth.py          # Rutas de autenticación
+│   └── __init__.py
+└── utils/
+    ├── security.py      # Funciones de seguridad (JWT, hashing)
+    ├── decorators.py    # Decoradores (token_required)
+    └── __init__.py
+```
 
 ## Endpoints
 
-### `POST /api/auth/register`
+### Autenticación
 
-Registra un nuevo usuario.
-
-**Request:**
+**POST `/api/auth/register`** - Registrar usuario
 ```json
 {
   "nombre": "Juan",
   "apellido": "Pérez",
+  "identificacion": "cedula",
+  "id_identificacion": "1234567890",
   "email": "juan@example.com",
-  "password": "segura123"
+  "misisdn": "3001234567",
+  "direccion": "Calle 123",
+  "fecha_de_nacimiento": "1990-01-15",
+  "password": "segura123",
+  "id_departamento": "1"
 }
 ```
 
-**Response (201):**
-```json
-{
-  "success": true,
-  "message": "Usuario registrado exitosamente.",
-  "user": {
-    "id_user": 1,
-    "nombre": "Juan",
-    "apellido": "Pérez",
-    "email": "juan@example.com"
-  },
-  "token": "eyJ0eXAiOiJKV1QiLCJhbGc..."
-}
-```
-
-### `POST /api/auth/login`
-
-Inicia sesión.
-
-**Request:**
+**POST `/api/auth/login`** - Iniciar sesión
 ```json
 {
   "email": "juan@example.com",
@@ -118,65 +125,23 @@ Inicia sesión.
 }
 ```
 
-**Response (200):**
-```json
-{
-  "success": true,
-  "message": "Login exitoso.",
-  "user": {
-    "id_user": 1,
-    "nombre": "Juan",
-    "apellido": "Pérez",
-    "email": "juan@example.com"
-  },
-  "token": "eyJ0eXAiOiJKV1QiLCJhbGc..."
-}
-```
+**GET `/api/auth/profile`** - Obtener perfil (requiere token)
+Headers: `Authorization: Bearer <token>`
 
-### `POST /api/auth/recover`
+**GET `/api/auth/users`** - Listar todos los usuarios (desarrollo)
 
-Solicita recuperación de cuenta por correo.
+**GET `/api/health`** - Verificar estado del servidor
 
-**Request:**
-```json
-{
-  "email": "juan@example.com"
-}
-```
+## Desarrollo
 
-**Response (200):**
-```json
-{
-  "success": true,
-  "message": "Se han enviado las instrucciones de recuperación al correo proporcionado."
-}
-```
+- El servidor se reinicia automáticamente cuando cambias archivos (si DEBUG=True)
+- Las contraseñas se hashean con bcrypt
+- Los tokens JWT expiran en 7 días
+- CORS está configurado para aceptar peticiones desde el frontend
 
-### `GET /api/auth/profile`
+## Notas de seguridad
 
-Obtiene el perfil del usuario autenticado.
-
-**Headers:**
-```
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGc...
-```
-
-**Response (200):**
-```json
-{
-  "success": true,
-  "user": {
-    "id_user": 1,
-    "nombre": "Juan",
-    "apellido": "Pérez",
-    "email": "juan@example.com"
-  }
-}
-```
-
-## Notas importantes
-
-- Las contraseñas se hashean con **bcrypt** antes de guardarse
-- Los tokens JWT expiran en **1 hora** (3600 segundos)
-- El frontend debe enviar el token en el header `Authorization: Bearer <token>`
-- La tabla `users` debe tener las columnas: `id_user`, `nombre`, `apellido`, `email`, `password_hash`
+- Cambiar `JWT_SECRET` y `SECRET_KEY` en producción
+- Usar HTTPS en producción
+- No pushar el archivo `.env` al repositorio
+- Usar variables de entorno para credenciales sensibles

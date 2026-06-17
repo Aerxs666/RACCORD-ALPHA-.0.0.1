@@ -1,6 +1,10 @@
+import hashlib
+import re
+from datetime import datetime, timedelta
+import jwt
+from config.config import config
 from models.user import User
 from utils.security import Security
-import re
 
 class AuthController:
     """Controlador para autenticación"""
@@ -15,8 +19,11 @@ class AuthController:
     def register(data):
         """Registra un nuevo usuario"""
         # Validaciones
-        if not data.get('nombre') or not data.get('apellido') or not data.get('email') or not data.get('password'):
-            return {'success': False, 'message': 'Faltan datos obligatorios.'}, 400
+        required_fields = ['nombre', 'apellido', 'email', 'password']
+        
+        for field in required_fields:
+            if not data.get(field):
+                return {'success': False, 'message': f'El campo {field} es obligatorio.'}, 400
         
         if not AuthController.validate_email(data['email']):
             return {'success': False, 'message': 'Email inválido.'}, 400
@@ -25,16 +32,31 @@ class AuthController:
             return {'success': False, 'message': 'La contraseña debe tener al menos 6 caracteres.'}, 400
         
         # Verificar si el usuario ya existe
-        existing_user = User.find_by_email(data['email'])
-        if existing_user:
-            return {'success': False, 'message': 'El email ya está registrado.'}, 409
+        try:
+            existing_user = User.find_by_email(data['email'])
+            if existing_user:
+                return {'success': False, 'message': 'El email ya está registrado.'}, 409
+        except Exception as e:
+            print(f"Error verificando email: {e}")
+            return {'success': False, 'message': f'Error en la base de datos: {str(e)}'}, 500
         
         # Hashear contraseña
         password_hash = Security.hash_password(data['password'])
         
         # Crear usuario
         try:
-            user = User.create(data['nombre'], data['apellido'], data['email'], password_hash)
+            user = User.create(
+                nombre=data['nombre'],
+                apellido=data['apellido'],
+                identificacion=data.get('identificacion', ''),
+                id_identificacion=data.get('id_identificacion', ''),
+                email=data['email'],
+                misisdn=data.get('misisdn', ''),
+                direccion=data.get('direccion', ''),
+                fecha_de_nacimiento=data.get('fecha_de_nacimiento'),
+                password_hash=password_hash,
+                id_departamento=data.get('id_departamento')
+            )
             
             if user:
                 token = Security.generate_token(user['id_user'])
@@ -52,7 +74,16 @@ class AuthController:
             else:
                 return {'success': False, 'message': 'Error al crear el usuario.'}, 500
         except Exception as e:
-            return {'success': False, 'message': f'Error: {str(e)}'}, 500
+            error_msg = str(e)
+            print(f"❌ Error registrando usuario: {error_msg}")
+            
+            # Mensajes más específicos para errores comunes
+            if "does not exist" in error_msg:
+                return {'success': False, 'message': f'Error de estructura de base de datos. Contacta al administrador.'}, 500
+            elif "unique" in error_msg.lower():
+                return {'success': False, 'message': 'Este email ya está registrado.'}, 409
+            else:
+                return {'success': False, 'message': f'Error: {error_msg}'}, 500
     
     @staticmethod
     def login(data):
@@ -90,19 +121,14 @@ class AuthController:
     def recover(data):
         """Recupera cuenta por correo"""
         if not data.get('email'):
-            return {'success': False, 'message': 'El email es obligatorio.'}, 400
-        
-        if not AuthController.validate_email(data['email']):
-            return {'success': False, 'message': 'Email inválido.'}, 400
+            return {'success': False, 'message': 'Email es obligatorio.'}, 400
         
         user = User.find_by_email(data['email'])
         if not user:
-            return {
-                'success': True,
-                'message': 'Si el correo existe en nuestros registros, recibirás instrucciones para recuperar tu cuenta.'
-            }, 200
+            # No revelar si el email existe o no
+            return {'success': True, 'message': 'Si el email existe, recibirás instrucciones de recuperación.'}, 200
         
-        # Placeholder: aquí se debería generar token de recuperación y enviar email.
+        # Aquí iría la lógica para enviar email
         return {
             'success': True,
             'message': 'Se han enviado las instrucciones de recuperación al correo proporcionado.'
@@ -122,7 +148,12 @@ class AuthController:
                 'id_user': user['id_user'],
                 'nombre': user['nombre'],
                 'apellido': user['apellido'],
-                'email': user['email']
+                'email': user['email'],
+                'identificacion': user.get('identificacion'),
+                'id_identificacion': user.get('id_identificacion'),
+                'misisdn': user.get('misisdn'),
+                'direccion': user.get('direccion'),
+                'fecha_de_nacimiento': user.get('fecha_de_nacimiento')
             }
         }, 200
     
@@ -139,3 +170,45 @@ class AuthController:
             }, 200
         except Exception as e:
             return {'success': False, 'message': f'Error: {str(e)}'}, 500
+    
+    @staticmethod
+    def update_profile(user_id, data):
+        """Actualiza el perfil del usuario"""
+        try:
+            # Validaciones básicas
+            if data.get('email'):
+                if not AuthController.validate_email(data['email']):
+                    return {'success': False, 'message': 'Email inválido.'}, 400
+                
+                # Verificar que el nuevo email no esté en uso
+                existing = User.find_by_email(data['email'])
+                if existing and existing['id_user'] != user_id:
+                    return {'success': False, 'message': 'El email ya está en uso.'}, 409
+            
+            # Actualizar usuario
+            user = User.update(user_id, **data)
+            
+            if not user:
+                return {'success': False, 'message': 'Usuario no encontrado.'}, 404
+            
+            return {
+                'success': True,
+                'message': 'Perfil actualizado exitosamente.',
+                'user': {
+                    'id_user': user['id_user'],
+                    'nombre': user['nombre'],
+                    'apellido': user['apellido'],
+                    'email': user['email'],
+                    'identificacion': user.get('identificacion'),
+                    'id_identificacion': user.get('id_identificacion'),
+                    'misisdn': user.get('misisdn'),
+                    'direccion': user.get('direccion'),
+                    'fecha_de_nacimiento': user.get('fecha_de_nacimiento')
+                }
+            }, 200
+        except Exception as e:
+            error_msg = str(e)
+            print(f"❌ Error actualizando perfil: {error_msg}")
+            if "unique" in error_msg.lower():
+                return {'success': False, 'message': 'Este email ya está en uso.'}, 409
+            return {'success': False, 'message': f'Error: {error_msg}'}, 500

@@ -1,1 +1,1 @@
-# Models module
+# Archivo __init__.py para models

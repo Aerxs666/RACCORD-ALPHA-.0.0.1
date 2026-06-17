@@ -14,25 +14,29 @@
   margin-bottom: 28px;
 }
 
-.dashboard-badge {
-  display: inline-flex;
+.header-actions {
+  display: flex;
+  gap: 10px;
   align-items: center;
-  gap: 8px;
-  font-size: 0.82rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  flex-wrap: wrap;
+}
+
+.profile-link-btn {
+  border: none;
+  border-radius: 14px;
+  background: rgba(132, 212, 255, 0.15);
   color: #84d4ff;
+  padding: 12px 18px;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1px solid #84d4ff;
+  transition: all 0.3s ease;
 }
 
-.user-dashboard-header h1 {
-  margin: 8px 0 6px;
-  font-size: clamp(2rem, 2.2vw, 2.4rem);
-}
-
-.user-dashboard-header p {
-  max-width: 560px;
-  color: rgba(245, 247, 251, 0.72);
+.profile-link-btn:hover {
+  background: #84d4ff;
+  color: #091116;
+  transform: translateY(-2px);
 }
 
 .logout-button {
@@ -43,6 +47,12 @@
   padding: 12px 18px;
   font-weight: 700;
   cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.logout-button:hover {
+  background: #1a6bb8;
+  transform: translateY(-2px);
 }
 
 .user-dashboard-actions {
@@ -58,6 +68,14 @@
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12);
+  transition: all 0.3s ease;
+}
+
+.user-action-card:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.15);
 }
 
 .user-action-card strong {
@@ -118,6 +136,43 @@
   padding: 10px 16px;
   font-weight: 700;
   cursor: pointer;
+}
+
+.profile-view {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(132, 212, 255, 0.15);
+  color: #84d4ff;
+  border: 1px solid #84d4ff;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 20px;
+  transition: all 0.3s ease;
+  font-size: 14px;
+}
+
+.back-button:hover {
+  background: #84d4ff;
+  color: #091116;
+  transform: translateX(-3px);
 }
 
 @media (max-width: 1080px) {
