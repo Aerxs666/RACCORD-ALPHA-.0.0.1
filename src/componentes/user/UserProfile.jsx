@@ -146,7 +146,7 @@ function UserProfile() {
                 className="btn-edit"
                 onClick={() => setIsEditing(true)}
               >
-                ✏️ Editar Perfil
+                Editar Perfil
               </button>
             )}
             {isEditing && (
@@ -155,7 +155,7 @@ function UserProfile() {
                   className="btn-save"
                   onClick={handleSubmit}
                 >
-                  ✔️ Guardar Cambios
+                  Guardar Cambios
                 </button>
                 <button 
                   className="btn-cancel"

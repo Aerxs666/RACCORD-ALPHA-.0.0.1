@@ -1,8 +1,30 @@
 .user-dashboard-shell {
   min-height: 100vh;
   padding: 28px 32px;
+  position: relative;
+  overflow: hidden;
   background: linear-gradient(180deg, #091116 0%, #041010 100%);
+  background-size: cover;
+  background-position: center top;
   color: #f5f7fb;
+}
+
+.user-dashboard-shell::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    100deg,
+   rgba(4, 9, 49, 0.233) 0%,
+    rgba(0, 0, 0, 0.897) 50%,
+    rgba(3, 6, 36, 0.233) 100%
+  );
+  z-index: 0;
+}
+
+.user-dashboard-shell > * { 
+  position: relative;
+  z-index: 1;
 }
 
 .user-dashboard-header {
@@ -23,36 +45,40 @@
 
 .profile-link-btn {
   border: none;
-  border-radius: 14px;
-  background: rgba(132, 212, 255, 0.15);
+  border-radius: 50px;
+  background: transparent;
   color: #84d4ff;
-  padding: 12px 18px;
+  padding: 12px 20px;
   font-weight: 700;
   cursor: pointer;
-  border: 1px solid #84d4ff;
+  border: 1.5px solid #84d4ff;
   transition: all 0.3s ease;
 }
 
 .profile-link-btn:hover {
-  background: #84d4ff;
-  color: #091116;
+  background: rgba(132, 212, 255, 0.12);
+  color: #ffffff;
+  border-color: rgba(132, 212, 255, 0.35);
   transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(30, 70, 120, 0.24);
 }
 
 .logout-button {
   border: none;
-  border-radius: 14px;
-  background: #1f86d0;
+  border-radius: 50px;
+  background: linear-gradient(90deg, rgba(52, 95, 154, 0.95) 0%, rgba(34, 64, 108, 0.95) 100%);
   color: white;
-  padding: 12px 18px;
+  padding: 12px 24px;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.3s ease;
+  box-shadow: 0 8px 20px rgba(20, 50, 90, 0.22);
 }
 
 .logout-button:hover {
-  background: #1a6bb8;
+ background: linear-gradient(90deg, rgba(52, 95, 154, 0.95) 0%, rgba(34, 64, 108, 0.95) 100%);
   transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(59, 139, 235, 0.35);
 }
 
 .user-dashboard-actions {
@@ -130,12 +156,20 @@
 
 .project-card button {
   border: none;
-  background: #0f79dc;
+ background: linear-gradient(90deg, rgba(52, 95, 154, 0.95) 0%, rgba(34, 64, 108, 0.95) 100%);
   color: white;
-  border-radius: 12px;
-  padding: 10px 16px;
+  border-radius: 50px;
+  padding: 10px 22px;
   font-weight: 700;
   cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 16px rgba(59, 139, 235, 0.25);
+}
+
+.project-card button:hover {
+   background: linear-gradient(90deg, rgba(52, 95, 154, 0.95) 0%, rgba(34, 64, 108, 0.95) 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(59, 139, 235, 0.35);
 }
 
 .profile-view {
@@ -157,11 +191,11 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: rgba(132, 212, 255, 0.15);
+  background: transparent;
   color: #84d4ff;
-  border: 1px solid #84d4ff;
-  padding: 10px 16px;
-  border-radius: 8px;
+  border: 1.5px solid #84d4ff;
+  padding: 11px 18px;
+  border-radius: 50px;
   font-weight: 600;
   cursor: pointer;
   margin-bottom: 20px;
@@ -169,11 +203,15 @@
   font-size: 14px;
 }
 
+
 .back-button:hover {
-  background: #84d4ff;
-  color: #091116;
+ background: linear-gradient(90deg, rgba(52, 95, 154, 0.95) 0%, rgba(34, 64, 108, 0.95) 100%);
+  color: #fff;
+  border-color: transparent;
   transform: translateX(-3px);
+  box-shadow: 0 6px 16px rgba(59, 139, 235, 0.3);
 }
+
 
 @media (max-width: 1080px) {
   .user-dashboard-actions {

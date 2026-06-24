@@ -2,16 +2,16 @@
   width: 100%;
   min-height: 100vh;
   padding: 28px 32px;
-  background: linear-gradient(180deg, #091116 0%, #041010 100%);
+  background: transparent;
   color: #f5f7fb;
 }
 
 .profile-card {
-  background: rgba(18, 23, 30, 0.95);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(10, 15, 24, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 18px;
   padding: 40px;
-  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.38);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.28);
   max-width: 900px;
   margin: 0 auto;
 }
@@ -51,7 +51,7 @@
 }
 
 .btn-edit {
-  background: linear-gradient(135deg, #1770d7, #1268c5);
+   background: linear-gradient(90deg, rgba(52, 95, 154, 0.95) 0%, rgba(34, 64, 108, 0.95) 100%);
   color: white;
 }
 

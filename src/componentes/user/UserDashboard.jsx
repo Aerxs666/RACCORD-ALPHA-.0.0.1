@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import './userDashboard.css';
 import UserProfile from './UserProfile';
+import dashboard from '../../assets/dashboard.jpeg';
 
 const UserDashboard = ({ user, onLogout }) => {
   const [activeTab, setActiveTab] = useState('dashboard'); // 'dashboard' o 'profile'
@@ -23,12 +24,12 @@ const UserDashboard = ({ user, onLogout }) => {
   };
 
   return (
-    <div className="user-dashboard-shell">
+    <div className="user-dashboard-shell" style={{ backgroundImage: `url(${dashboard})` }}>
       <header className="user-dashboard-header">
         <div>
           <p className="dashboard-badge">Panel de Usuario</p>
           <h1>Hola, {user?.nombre || user?.name || 'Usuario'}</h1>
-          <p>Administra tu trabajo, sigue proyectos y consulta actividades recientes.</p>
+
         </div>
         <div className="header-actions">
           <button 
@@ -36,7 +37,7 @@ const UserDashboard = ({ user, onLogout }) => {
             onClick={handleProfileClick}
             title="Ver perfil"
           >
-            👤 Perfil
+            Perfil
           </button>
           <button className="logout-button" onClick={onLogout} type="button">
             Cerrar sesión
