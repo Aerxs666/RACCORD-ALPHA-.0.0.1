@@ -89,7 +89,7 @@ const Login = ({ onLogin }) => {
   return (
     <div className="login-page">
       <div className="login-box">
-        <img className="brand-logo" src="/raccord-logo.jpeg" alt="Raccord" />
+        <img className="brand-logo" src="/header.jpeg" alt="Raccord" />
 
         <div className="login-card">
           <div className="login-tabs">
