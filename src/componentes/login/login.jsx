@@ -9,7 +9,7 @@ const Login = ({ onLogin }) => {
   const [registerData, setRegisterData] = useState({
     nombre: '',
     apellido: '',
-    identificacion: '',
+    identificacion: 'cedula',
     id_identificacion: '',
     email: '',
     misisdn: '',
@@ -17,10 +17,20 @@ const Login = ({ onLogin }) => {
     fecha_de_nacimiento: '',
     password: '',
     confirmPassword: '',
-    id_departamento: '',
+    id_departamento: '1',
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showPasswordRequirements, setShowPasswordRequirements] = useState(false);
+
+  const validatePassword = (password) => {
+    return {
+      minLength: password.length >= 8,
+      hasUpperCase: /[A-Z]/.test(password),
+      hasNumber: /\d/.test(password),
+      hasSpecialChar: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password),
+    };
+  };
 
   const handleLoginChange = (event) => {
     const { name, value } = event.target;
@@ -284,9 +294,36 @@ const Login = ({ onLogin }) => {
                     type="password"
                     placeholder="Crea una contraseña"
                     value={registerData.password}
-                    onChange={handleRegisterChange}
+                    onChange={(e) => {
+                      handleRegisterChange(e);
+                      setShowPasswordRequirements(true);
+                    }}
+                    onBlur={() => setShowPasswordRequirements(false)}
                     required
                   />
+                  {showPasswordRequirements && registerData.password && (
+                    <div className="password-requirements">
+                      {(() => {
+                        const reqs = validatePassword(registerData.password);
+                        return (
+                          <>
+                            <div className={`requirement ${reqs.minLength ? 'met' : ''}`}>
+                              <span>{reqs.minLength ? '✓' : '✗'}</span> Mínimo 8 caracteres
+                            </div>
+                            <div className={`requirement ${reqs.hasUpperCase ? 'met' : ''}`}>
+                              <span>{reqs.hasUpperCase ? '✓' : '✗'}</span> Al menos una mayúscula
+                            </div>
+                            <div className={`requirement ${reqs.hasNumber ? 'met' : ''}`}>
+                              <span>{reqs.hasNumber ? '✓' : '✗'}</span> Al menos un número
+                            </div>
+                            <div className={`requirement ${reqs.hasSpecialChar ? 'met' : ''}`}>
+                              <span>{reqs.hasSpecialChar ? '✓' : '✗'}</span> Carácter especial
+                            </div>
+                          </>
+                        );
+                      })()}
+                    </div>
+                  )}
                 </div>
 
                 <div className="field-group">
